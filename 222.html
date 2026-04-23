@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Для тебя ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Bad+Script&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            background: linear-gradient(135deg, #1a0a1e, #2d1b36, #1a0a1e);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .stars {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        .star {
+            position: absolute; width: 2px; height: 2px;
+            background: #fff; border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
+
+        .floating-hearts {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .floating-heart {
+            position: absolute; font-size: 18px;
+            animation: floatUp linear infinite; opacity: 0.5;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100dvh) rotate(0deg) scale(0.4); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10dvh) rotate(720deg) scale(1.2); opacity: 0; }
+        }
+
+        .container {
+            position: relative; z-index: 1;
+            min-height: 100vh; min-height: 100dvh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px 14px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 32px 24px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(255,100,150,0.08);
+            animation: cardAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glow-ring {
+            width: 96px; height: 96px;
+            border: 2px solid rgba(255, 107, 157, 0.3);
+            border-radius: 50%; margin: 0 auto 14px;
+            display: flex; align-items: center; justify-content: center;
+            animation: glowPulse 2s ease-in-out infinite; position: relative;
+        }
+        .glow-ring::before {
+            content: ''; position: absolute; inset: -12px;
+            border: 1px solid rgba(255, 107, 157, 0.12); border-radius: 50%;
+            animation: glowPulse 2s ease-in-out infinite 0.5s;
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.15); }
+            50% { box-shadow: 0 0 40px rgba(255, 107, 157, 0.3); }
+        }
+
+        .big-heart {
+            font-size: 48px;
+            animation: heartBeat 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+            60% { transform: scale(1); }
+        }
+
+        h1 {
+            font-family: 'Bad Script', cursive;
+            font-size: 1.8em;
+            margin: 14px 0 6px;
+            background: linear-gradient(135deg, #ff6b9d, #ff8fab, #ffb3c6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.88em;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #ff6b9d, #e84393);
+            border: none; color: #fff;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-family: 'Comfortaa', cursive;
+            font-size: 1em; font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(232, 67, 147, 0.35);
+            -webkit-user-select: none; user-select: none;
+        }
+        .start-btn:active { transform: scale(0.96); }
+
+        .progress-bar {
+            width: 100%; height: 4px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px; margin-bottom: 14px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d, #ff8fab, #ffb3c6);
+            border-radius: 2px;
+            transition: width 0.6s ease;
+        }
+        .question-counter {
+            font-size: 0.72em;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .question-emoji { font-size: 40px; display: block; margin-bottom: 8px; }
+        .question-text {
+            font-size: 1.12em;
+            margin-bottom: 18px;
+            line-height: 1.5;
+            color: #ffe0ec;
+        }
+
+        .options { display: flex; flex-direction: column; gap: 9px; }
+
+        .option-btn {
+            background: rgba(255,255,255,0.07);
+            border: 1.5px solid rgba(255,255,255,0.12);
+            color: #fff;
+            padding: 13px 16px;
+            border-radius: 14px;
+            font-family: 'Comfortaa', cursive;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            line-height: 1.4;
+            -webkit-user-select: none; user-select: none;
+        }
+        .option-btn:active { transform: scale(0.97); }
+
+        .option-btn.wrong-picked {
+            background: rgba(255, 80, 80, 0.15);
+            border-color: rgba(255, 80, 80, 0.3);
+            animation: shake 0.5s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            15% { transform: translateX(-5px); }
+            30% { transform: translateX(5px); }
+            45% { transform: translateX(-3px); }
+            60% { transform: translateX(3px); }
+            75% { transform: translateX(-1px); }
+        }
+
+        .option-btn.right-picked {
+            background: rgba(255, 107, 157, 0.3);
+            border-color: rgba(255, 107, 157, 0.6);
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.2);
+        }
+
+        .option-btn.dimmed {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* Feedback area */
+        .feedback-area {
+            margin-top: 16px;
+            min-height: 20px;
+            overflow: hidden;
+        }
+        .feedback-box {
+            display: none;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            line-height: 1.5;
+            animation: feedbackSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes feedbackSlide {
+            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .feedback-box.wrong-fb {
+            display: block;
+            background: rgba(255, 80, 80, 0.12);
+            border: 1px solid rgba(255, 80, 80, 0.2);
+            color: rgba(255,255,255,0.8);
+        }
+        .feedback-box.right-fb {
+            display: block;
+            background: rgba(255, 107, 157, 0.18);
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            color: #ffd1dc;
+            font-weight: 500;
+        }
+
+        .final-heart { font-size: 52px; display: block; margin-bottom: 8px; }
+        .final-message {
+            font-family: 'Bad Script', cursive;
+            font-size: 1.6em;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #ff6b9d, #ff8fab, #ffb3c6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; line-height: 1.4;
+        }
+        .final-sub { font-size: 0.95em; color: #ffb3c6; margin: 4px 0 0; font-weight: 500; }
+        .final-details {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 18px;
+            margin: 16px 0;
+            text-align: left;
+        }
+        .ps-box {
+            background: rgba(255, 107, 157, 0.1);
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            border-radius: 14px;
+            padding: 13px 15px;
+            font-size: 0.84em;
+            color: #ffb3c6;
+            line-height: 1.6;
+        }
+        .final-emojis { font-size: 1.5em; margin-top: 10px; }
+
+        .confetti-container {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 10;
+        }
+        .confetti-piece {
+            position: absolute; top: -10px;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100dvh) rotate(720deg); opacity: 0; }
+        }
+
+        @media (min-width: 420px) and (max-width: 440px) {
+            .card { padding: 30px 24px; }
+        }
+        @media (max-width: 400px) {
+            .card { padding: 26px 18px; border-radius: 24px; }
+            h1 { font-size: 1.55em; }
+            .question-text { font-size: 1.02em; }
+            .option-btn { font-size: 0.84em; padding: 12px 14px; }
+            .final-message { font-size: 1.35em; }
+            .glow-ring { width: 84px; height: 84px; }
+            .big-heart { font-size: 42px; }
+            .feedback-box { font-size: 0.82em; padding: 11px 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="floating-hearts" id="floatingHearts"></div>
+    <div class="confetti-container" id="confetti"></div>
+
+    <div class="container">
+        <div class="card">
+            <!-- Start -->
+            <div class="screen active" id="screen-0">
+                <div class="glow-ring"><span class="big-heart">💌</span></div>
+                <h1>Это для тебя, зай ❤️</h1>
+                <p class="subtitle">Маленький сюрприз от того, кто тебя очень любит... Готова?</p>
+                <button class="start-btn" onclick="startQuiz()">Открыть 💝</button>
+            </div>
+
+            <!-- Quiz -->
+            <div class="screen" id="screen-quiz">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="question-counter" id="questionCounter"></div>
+                <span class="question-emoji" id="questionEmoji"></span>
+                <p class="question-text" id="questionText"></p>
+                <div class="options" id="optionsContainer"></div>
+                <div class="feedback-area">
+                    <div class="feedback-box" id="feedbackBox"></div>
+                </div>
+            </div>
+
+            <!-- Final -->
+            <div class="screen" id="screen-final">
+                <span class="final-heart">🥹❤️</span>
+                <div class="final-message">Зайка, ты молодец!</div>
+                <p class="final-sub">Жди звонок в дверь 🔔</p>
+                <div class="final-details">
+                    <div class="ps-box">
+                        <strong>P.S.</strong> Приложи карточку к терминалу курьера — я денюжек закинул 💳✨<br><br>
+                        Люблю тебя 🥰
+                    </div>
+                </div>
+                <div class="final-emojis">💕🌹💕</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var questions = [
+            {
+                emoji: "🌹",
+                text: "Зай, знаешь, почему я выбрал именно тебя?",
+                options: [
+                    { text: "Потому что я самая красивая 😏", feedback: "Красивая — это точно! Но дело не только в этом... 😉 Попробуй ещё!" },
+                    { text: "Потому что я умная 🧠", feedback: "Умная и прекрасная, но я выбрал тебя сердцем 💖 Подумай ещё, зая!" },
+                    { text: "Потому что мы созданы друг для друга 💞", feedback: "Именно так! Моё сердце это знает сразу ❤️", isCorrect: true }
+                ]
+            },
+            {
+                emoji: "🍕",
+                text: "Что я сделаю, если ты скажешь «хочу есть»?",
+                options: [
+                    { text: "Скажу «потерпи» 😅", feedback: "Ну ты что! Я никогда не заставлю тебя голодать 🥺🍕 Попробуй ещё!" },
+                    { text: "Закажу то, что ты любишь 🍝", feedback: "Вот именно! Главное, чтобы ты была сыта и счастлива 😋❤️", isCorrect: true },
+                    { text: "Предложу воды 💧", feedback: "Водой сыта не будешь! Нужно баловать тебя вкусняшками 🥣❤️ Подумай ещё!" }
+                ]
+            },
+            {
+                emoji: "📱",
+                text: "Сколько раз в день я думаю о тебе?",
+                options: [
+                    { text: "Иногда 🤔", feedback: "Иногда? Это слишком мало! Ты в каждой моей мысли 🌪️💭 Подумай ещё!" },
+                    { text: "Раз 10 может 🤷", feedback: "Десять? Это только за одну минуту! Ты всегда в моих мыслях 💕 Попробуй ещё!" },
+                    { text: "Постоянно. 24/7. Не могу перестать 💭❤️", feedback: "Правильно! Ты — моя первая мысль утром и последняя ночью 🌙✨", isCorrect: true }
+                ]
+            },
+            {
+                emoji: "🎁",
+                text: "Угадай, зая, что я сейчас делаю?",
+                options: [
+                    { text: "Работаю 💻", feedback: "Работа подождёт! Сейчас самое важное — ты и твой сюрприз 🎀 Попробуй ещё!" },
+                    { text: "Играю в телефон 📱", feedback: "Может залипал пару минут, но мысли только о тебе и подарке 🤭🎁 Подумай ещё!" },
+                    { text: "Готовлю тебе сюрприз 🤫🎀", feedback: "Вот именно! И он уже почти у тебя на пороге... 🚚💝", isCorrect: true }
+                ]
+            },
+            {
+                emoji: "🌍",
+                text: "Если бы мне предложили обменять тебя на что угодно...",
+                options: [
+                    { text: "На миллион долларов 💰", feedback: "Ну ты что, глупышка! Без тебя никакие деньги не нужны 💸❌ Попробуй ещё!" },
+                    { text: "На мотоцикл 🏍️", feedback: "Красивый был бы, но мне нужна ты, а не железный конь 🏍️💔 Подумай ещё, зая!" },
+                    { text: "Ни на что! Ты — моё всё 🙅‍♂️❤️", feedback: "Единственно верный! Ты дороже любого богатства в мире 🌍💎", isCorrect: true }
+                ]
+            },
+            {
+                emoji: "🚪",
+                text: "Зай, что будет, когда ты услышишь звонок в дверь?",
+                options: [
+                    { text: "Открою и скажу «ошибка» 🤨", feedback: "Какая ошибка! Это судьба стучится к тебе 🔔✨ Попробуй ещё!" },
+                    { text: "Не открою 🙈", feedback: "Обязательно открой! Там ждёт самое важное на сегодня 📦💕 Подумай ещё!" },
+                    { text: "Открою и получу сюрприз от любимого 🎉💝", feedback: "Именно! Жди, он уже летит к тебе! 🏃‍♂️💨❤️", isCorrect: true }
+                ]
+            }
+        ];
+
+        var currentQ = 0;
+        var heartsTimer;
+
+        function createStars() {
+            var c = document.getElementById('stars');
+            for (var i = 0; i < 55; i++) {
+                var s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.animationDelay = Math.random() * 3 + 's';
+                s.style.animationDuration = (2 + Math.random() * 3) + 's';
+                c.appendChild(s);
+            }
+        }
+
+        function spawnHeart() {
+            var c = document.getElementById('floatingHearts');
+            var h = document.createElement('div');
+            h.className = 'floating-heart';
+            var syms = ['❤️','💕','💖','💗','💝','🌹','💘'];
+            h.textContent = syms[Math.floor(Math.random() * syms.length)];
+            h.style.left = Math.random() * 100 + '%';
+            h.style.fontSize = (14 + Math.random() * 16) + 'px';
+            h.style.animationDuration = (7 + Math.random() * 8) + 's';
+            c.appendChild(h);
+            setTimeout(function() { h.remove(); }, 17000);
+        }
+
+        function startHearts() {
+            heartsTimer = setInterval(spawnHeart, 1000);
+        }
+
+        function showQuestion(idx) {
+            var q = questions[idx];
+            document.getElementById('questionEmoji').textContent = q.emoji;
+            document.getElementById('questionText').textContent = q.text;
+            document.getElementById('questionCounter').textContent = 'Вопрос ' + (idx + 1) + ' из ' + questions.length;
+            document.getElementById('progressFill').style.width = ((idx + 1) / questions.length * 100) + '%';
+
+            var cont = document.getElementById('optionsContainer');
+            cont.innerHTML = '';
+
+            var fb = document.getElementById('feedbackBox');
+            fb.className = 'feedback-box';
+            fb.textContent = '';
+            fb.style.display = 'none';
+
+            for (var i = 0; i < q.options.length; i++) {
+                (function(optIndex) {
+                    var btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = q.options[optIndex].text;
+                    btn.setAttribute('data-i', optIndex);
+                    btn.addEventListener('click', function() {
+                        handleAnswer(optIndex);
+                    });
+                    cont.appendChild(btn);
+                })(i);
+            }
+        }
+
+        function handleAnswer(idx) {
+            var q = questions[currentQ];
+            var chosen = q.options[idx];
+            var allBtns = document.querySelectorAll('.option-btn');
+            var fb = document.getElementById('feedbackBox');
+
+            if (chosen.isCorrect) {
+                // Disable all buttons
+                for (var i = 0; i < allBtns.length; i++) {
+                    allBtns[i].style.pointerEvents = 'none';
+                }
+                // Highlight correct
+                for (var j = 0; j < allBtns.length; j++) {
+                    var bi = parseInt(allBtns[j].getAttribute('data-i'));
+                    if (q.options[bi].isCorrect) {
+                        allBtns[j].classList.add('right-picked');
+                    } else {
+                        allBtns[j].classList.add('dimmed');
+                    }
+                }
+                // Show correct feedback
+                fb.textContent = chosen.feedback;
+                fb.className = 'feedback-box right-fb';
+
+                setTimeout(function() {
+                    currentQ++;
+                    if (currentQ < questions.length) {
+                        showQuestion(currentQ);
+                    } else {
+                        showFinal();
+                    }
+                }, 2200);
+
+            } else {
+                // Wrong answer
+                var clickedBtn = document.querySelector('.option-btn[data-i="' + idx + '"]');
+                clickedBtn.classList.add('wrong-picked');
+
+                // Show wrong feedback
+                fb.textContent = chosen.feedback;
+                fb.className = 'feedback-box wrong-fb';
+
+                // Remove shake class after animation so button is clickable again
+                setTimeout(function() {
+                    clickedBtn.classList.remove('wrong-picked');
+                }, 600);
+            }
+        }
+
+        function startQuiz() {
+            document.getElementById('screen-0').classList.remove('active');
+            document.getElementById('screen-quiz').classList.add('active');
+            showQuestion(0);
+        }
+
+        function showFinal() {
+            document.getElementById('screen-quiz').classList.remove('active');
+            document.getElementById('screen-final').classList.add('active');
+            launchConfetti();
+            for (var j = 0; j < 18; j++) {
+                setTimeout(spawnHeart, j * 120);
+            }
+        }
+
+        function launchConfetti() {
+            var c = document.getElementById('confetti');
+            var cols = ['#ff6b9d','#ff8fab','#ffb3c6','#ffd1dc','#fff','#e84393','#fd79a8'];
+            var syms = ['❤️','💕','💖','🌹','✨','⭐','💝'];
+
+            for (var i = 0; i < 50; i++) {
+                (function(d) {
+                    setTimeout(function() {
+                        var p = document.createElement('div');
+                        p.className = 'confetti-piece';
+                        p.style.left = Math.random() * 100 + '%';
+                        p.style.animationDuration = (2 + Math.random() * 3) + 's';
+
+                        if (Math.random() > 0.5) {
+                            p.textContent = syms[Math.floor(Math.random() * syms.length)];
+                            p.style.fontSize = (10 + Math.random() * 14) + 'px';
+                        } else {
+                            p.style.background = cols[Math.floor(Math.random() * cols.length)];
+                            p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                            p.style.width = (6 + Math.random() * 8) + 'px';
+                            p.style.height = (6 + Math.random() * 8) + 'px';
+                        }
+
+                        c.appendChild(p);
+                        setTimeout(function() { p.remove(); }, 5500);
+                    }, d);
+                })(i * 40);
+            }
+        }
+
+        createStars();
+        startHearts();
+        for (var k = 0; k < 6; k++) {
+            setTimeout(spawnHeart, k * 400);
+        }
+    </script>
+</body>
+</html>
+
